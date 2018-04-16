@@ -47,8 +47,8 @@ api = tweepy.API(auth, wait_on_rate_limit=True)
 for tweet in tweepy.Cursor(api.search, geocode='37.89995,-4.753081,1km').items(5):
 	if (tweet.user.id != 218036519) and (tweet.user.id != 148165816):
 		print (tweet.created_at)
-		print (tweet.text,end="\n")
-		print (tweet.user.screen_name,end="\n")
-		print (tweet.user.id,end="\n")
-		print (tweet.place.full_name,end="\n")
-		print (tweet.coordinates,end="\n\n")
+		#print (tweet.text,end="\n")
+		#print (tweet.user.screen_name,end="\n")
+		#print (tweet.user.id,end="\n")
+		#print (tweet.place.full_name,end="\n")
+		#print (tweet.coordinates,end="\n\n")

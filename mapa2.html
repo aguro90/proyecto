@@ -1,0 +1,32 @@
+    <!DOCTYPE html>  
+    <html> 
+    <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+      <script type="text/javascript">
+var obj = {'Canada' : ['Alberta', 'Manitoba', 'Quebec'], USA: ['Arizona', 'Montana', 'Washington'], EU : ['Belgium', 'Germany', 'UK Not For Long']};
+
+$('#countries').change(function(){
+    var ctry = this.value;
+    if (ctry==''){
+      $('#states').fadeOut();
+    }else{
+        $('#states option').remove();
+        for (i=0; i < obj[ctry].length; i++){
+            x = obj[ctry][i];
+            $('#states').append('<option value="'+x+'">'+x+'</option>');
+        }
+        $('#states').fadeIn();
+    }
+});
+</script>
+    </head> 
+    <body>
+<select id="countries">
+  <option value="">Choose</option>
+  <option value="Canada">Canada</option>
+  <option value="EU">EU</option>
+  <option value="USA">USA</option>
+</select>
+<select id="states"></select>
+      </body>  
+    </html> 
