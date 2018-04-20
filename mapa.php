@@ -25,12 +25,14 @@ function updateMarkerStatus(str) {
 }
 
 function updateMarkerPosition(latLng) {
-  document.getElementById('lati').innerHTML = [
+  document.getElementById('lat').innerHTML = [
     latLng.lat()
   ];
-  document.getElementById('longi').innerHTML = [
+
+  document.getElementById('lng').innerHTML = [
     latLng.lng()
   ];
+
 }
 
 function updateMarkerAddress(str) {
@@ -40,9 +42,28 @@ function updateMarkerAddress(str) {
 
 
 
-function initialize(radio) { 
+function initialize(radio,lat,lng) { 
 
-  var latLng = new google.maps.LatLng(37.89995,-4.753081);
+console.log('antes radio:',radio)
+if (typeof radio !== 'number'){
+  radio=1000;
+};
+console.log(radio);
+
+console.log('antes lat:',lat)
+if (typeof lat !== 'number'){
+  lat=37.89995;
+};
+console.log(lat);
+
+console.log('antes lng:',lng)
+if (typeof lng !== 'number'){
+  lng= "-4.753081";
+};
+console.log(lng);
+
+
+  var latLng = new google.maps.LatLng(lat,lng);
   var map = new google.maps.Map(document.getElementById('mapCanvas'), {
     zoom: 13,
     center: latLng,
@@ -54,7 +75,7 @@ function initialize(radio) {
     map: map,
     draggable: true
   });
-  if (radio === undefined) {
+  if (radio != 2000 && radio !=3000) {
         radio = 1000;
     } 
   var circle = new google.maps.Circle({
@@ -112,8 +133,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <b>Marker status:</b>
     <div id="markerStatus"><i>Click and drag the marker.</i></div>
     <b>Current position:</b>
-    <div id="lati"><b>Latitud : </b></div>
-    <div id="longi"><b>Longitud : </b></div>
+    <div id="latitud"><b>Latitud : <p id="lat" value=""></p> <b></div>
+    <div id="longitud"><b>Longitud : <p id="lng" value=""></p> </b></div>
     <b>Closest matching address:</b>
     <div id="address"></div>
 
@@ -125,9 +146,13 @@ google.maps.event.addDomListener(window, 'load', initialize);
        <option value="3000">3 KM</option>
    </select>
    
-   <button onclick="initialize(document.getElementById('radio').value,document.getElementById('lati').value,document.getElementById('longi').value);">Pincha</button>
+   <button onclick="initialize(parseInt(document.getElementById('radio').value),parseFloat(document.getElementById('lat').innerHTML),parseFloat(document.getElementById('lng').innerHTML));">Pincha</button>
+
   </div>
+
  <p id="demo"></p>
+ <p id="demo1"></p>
+
 
  </body>
 </html>
