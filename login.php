@@ -102,7 +102,8 @@ if (isset($_POST['password']) and !empty($_POST['password']) and isset($_POST['u
                    $_SESSION['Logged'] = 1;
                    $_SESSION['user_id'] = $user_id;
                    $_SESSION['username'] = $username;
-                   exit();
+                   echo "exito";
+exit();
                }
            }
             else{
