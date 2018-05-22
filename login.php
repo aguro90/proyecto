@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php
-include "conexion.php";
+require "connections/connection1.php";
 ?>
 <head>
 
@@ -102,7 +102,7 @@ if (isset($_POST['password']) and !empty($_POST['password']) and isset($_POST['u
                    $_SESSION['Logged'] = 1;
                    $_SESSION['user_id'] = $user_id;
                    $_SESSION['username'] = $username;
-                   echo "exito";
+                   header("location:index.php");
 exit();
                }
            }
