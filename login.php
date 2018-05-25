@@ -103,7 +103,7 @@ if (isset($_POST['password']) and !empty($_POST['password']) and isset($_POST['u
                    $_SESSION['user_id'] = $user_id;
                    $_SESSION['username'] = $username;
                    header("location:index.php");
-exit();
+						exit();
                }
            }
             else{

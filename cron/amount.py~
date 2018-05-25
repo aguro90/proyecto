@@ -1,19 +1,26 @@
-import mysql.connector
-from mysql.connector import errorcode
+import MySQLdb
 
-try:
-cnx = mysql.connector.connect(
-	user='twitter_users',
-	password='twitter.users1@',
-	host='127.0.0.1',
-	database='twitter')
-except mysql.connector.Error as err:
-  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    print("Something is wrong with your user name or password")
-  elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    print("Database does not exist")
-  else:
-    print(err)
-else:
-  cnx.close()
+import tweepy
+from tweepy import OAuthHandler
 
+consumer_key = '0NLqf3W3RusCKFfk2cj1NAXVl'
+consumer_secret = '2JLKstfcDXpZTpbRFUHk9khe64N9JHDI8eStNhKPGCtF5nnKoB'
+
+db = MySQLdb.connect(
+		user='twitter_accounts',
+		passwd='twitter.accounts1@',
+		host='127.0.0.1',
+		db='twitter')
+
+cur = db.cursor()
+
+cur.execute("select * from accounts")
+
+for row in cur.fetchall():
+	auth = OAuthHandler(consumer_key, consumer_secret)
+	auth.set_access_token(row[4], row[5]) 
+	api = tweepy.API(auth, wait_on_rate_limit=True)
+
+	user = api.get_user
+	
+	print user.followers_count

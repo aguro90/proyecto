@@ -22,7 +22,6 @@ if (isset($_SESSION['access_token'])) {
     $screen_name = $user->screen_name;                                                        //username
     $secret = $access_token['oauth_token_secret'];
     $token = $access_token['oauth_token'];
-
 	if (isset($id)){
 	$stmt = $con->prepare("SELECT id_account  FROM accounts WHERE id_account=? LIMIT 1");
     	$stmt->bind_param('s', $id);
@@ -30,9 +29,11 @@ if (isset($_SESSION['access_token'])) {
     	$stmt->bind_result($comp);
     	$stmt->store_result();
 		if($stmt->num_rows == 0){
-				echo "No hay ninguno.Vamos a insertarlo";
-					$stmt = $con->prepare("INSERT INTO accounts  values(?,?,?,now(),?,?,?)");
-    				$stmt->bind_param('issssi', intval($id),$screen_name,$name,$token,$secret,intval($_SESSION['user_id']));
+				echo "Insertando...<br>";
+					$stmt = $con->prepare("INSERT INTO accounts values(?,?,?,now(),?,?,?)");
+					echo $id;echo "<br>";
+    				$stmt->bind_param('issssi', $id,$screen_name,$name,$token,$secret,intval($_SESSION['user_id']));
+    				
     				//echo $stmt;
     				$stmt->execute();
 		}else{
