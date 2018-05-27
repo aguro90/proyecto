@@ -2,6 +2,7 @@
 <html lang="en">
 <?php
 require "connections/connection1.php";
+require "connections/connection2.php";
 ?>
 <head>
 
@@ -98,10 +99,21 @@ if (isset($_POST['password']) and !empty($_POST['password']) and isset($_POST['u
         {
             if($stmt->fetch()) //fetching the contents of the row
             {
+            	//vamos a averiguar la cuenta default del usuario
+            	
+            	    $stmt1 = $con2->prepare("SELECT id_account,screen_name FROM accounts WHERE user_id=? LIMIT 1");
+    					$stmt1->bind_param('i', $user_id);
+    					$stmt1->execute();
+    					$stmt1->bind_result($id_account,$screen_name);
+    					$stmt1->store_result();
+    					$stmt1->fetch();
+            	
                    session_start();
-                   $_SESSION['Logged'] = 1;
-                   $_SESSION['user_id'] = $user_id;
-                   $_SESSION['username'] = $username;
+                  $_SESSION['Logged'] = 1;
+                  $_SESSION['user_id'] = $user_id;
+                  $_SESSION['username'] = $username;
+                  $_SESSION['screen_name']=$screen_name;
+                  $_SESSION['id_account']=$id_account;
                    header("location:index.php");
 						exit();
                }

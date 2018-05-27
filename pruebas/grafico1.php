@@ -2,7 +2,7 @@
   require "../connections/connection2.php";
 $dias=array();
 $followers=array();
-$sth = mysqli_query($con,"select date,number from followers where account_id = 273587264 limit 30");
+$sth = mysqli_query($con2,"select date,number from followers where account_id = 273587264 limit 30");
 
         while($row = mysqli_fetch_array($sth))
   {

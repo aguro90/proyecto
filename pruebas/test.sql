@@ -23,10 +23,16 @@ DROP TABLE IF EXISTS `accounts`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `accounts` (
-  `id_cuenta` int(11) NOT NULL,
+  `id_account` varchar(50) NOT NULL,
   `screen_name` varchar(40) NOT NULL,
+  `name` varchar(50) NOT NULL,
   `date` date NOT NULL,
-  PRIMARY KEY (`id_cuenta`)
+  `oauth_token` varchar(60) NOT NULL,
+  `oauth_secret` varchar(60) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  PRIMARY KEY (`id_account`),
+  KEY `accounts_user_id_fk` (`user_id`),
+  CONSTRAINT `accounts_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -36,7 +42,34 @@ CREATE TABLE `accounts` (
 
 LOCK TABLES `accounts` WRITE;
 /*!40000 ALTER TABLE `accounts` DISABLE KEYS */;
+INSERT INTO `accounts` VALUES ('273587264','aldelam96','Alfonso de la Mata','2018-05-23','273587264-cLW9fWyOmtK0F2yNJFqzjCRmM5tNcGmGhRnp1ruy','1Ba4qVilSUeMJIDewagyKKcruwbvaOCi2wBaiQ65egGys',1),('782578505469034496','goodplaysleague','League of Good Plays','2018-05-23','782578505469034496-7u3ZoHp5YRejlvhdyM9FG4MzxFh7fpj','tmkGCH8MRsAIraRh7bzgRcm1TAk461lbiZNOhuZVfGNlo',1);
 /*!40000 ALTER TABLE `accounts` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `followers`
+--
+
+DROP TABLE IF EXISTS `followers`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `followers` (
+  `account_id` varchar(50) NOT NULL,
+  `date` date NOT NULL,
+  `number` int(11) NOT NULL,
+  PRIMARY KEY (`account_id`,`date`),
+  CONSTRAINT `followers_id_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id_account`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `followers`
+--
+
+LOCK TABLES `followers` WRITE;
+/*!40000 ALTER TABLE `followers` DISABLE KEYS */;
+INSERT INTO `followers` VALUES ('273587264','2018-05-23',212),('273587264','2018-05-24',212),('273587264','2018-05-25',212),('273587264','2018-05-26',212),('273587264','2018-05-27',212),('782578505469034496','2018-05-23',31),('782578505469034496','2018-05-24',31),('782578505469034496','2018-05-25',31),('782578505469034496','2018-05-26',31),('782578505469034496','2018-05-27',31);
+/*!40000 ALTER TABLE `followers` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -74,4 +107,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-05-22 12:28:43
+-- Dump completed on 2018-05-27  3:29:53
