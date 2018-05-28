@@ -107,13 +107,13 @@ if (isset($_POST['password']) and !empty($_POST['password']) and isset($_POST['u
     					$stmt1->bind_result($id_account,$screen_name);
     					$stmt1->store_result();
     					$stmt1->fetch();
-            	
+            		
                    session_start();
                   $_SESSION['Logged'] = 1;
                   $_SESSION['user_id'] = $user_id;
                   $_SESSION['username'] = $username;
-                  $_SESSION['screen_name']=$screen_name;
-                  $_SESSION['id_account']=$id_account;
+                  if(isset($screen_name)and !empty($screen_name)) {$_SESSION['screen_name']=$screen_name;}else {$_SESSION['screen_name']="";}
+                  if(isset($id_account)and !empty($id_account)) {$_SESSION['id_account']=$id_account;}else {$_SESSION['id_account']="";}
                    header("location:index.php");
 						exit();
                }

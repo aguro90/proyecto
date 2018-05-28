@@ -2,13 +2,14 @@
 
   require "security/security1.php";
 require 'connections/connection2.php';
-
-$query = "SELECT date,number FROM followers where account_id = 273587264";
+if(isset($_SESSION['id_account']) and !empty($_SESSION['id_account'])) {
+$query = "SELECT date,number FROM followers where account_id = ".$_SESSION['id_account']."";
 $result = mysqli_query($con2, $query);
 $chart_data = '';
 while($row = mysqli_fetch_array($result))
 {
  $chart_data .= "{ date:'".$row["date"]."', followers:".$row["number"]."}, ";
+}
 }
 ?>
 
@@ -23,7 +24,7 @@ while($row = mysqli_fetch_array($result))
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Twitter Geo Project</title>
+    <title>Auto CM Project</title>
 
     <style>
     .activo{background: darkgray;};
@@ -59,7 +60,7 @@ while($row = mysqli_fetch_array($result))
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.php">Twitter Geo</a>
+                <a class="navbar-brand" href="index.php">AUTO CM </a><i class="fa fa-twitter" style="font-size:36px;margin-top: 5px;color: #1da1f2;"></i>
             </div>
             <!-- /.navbar-header derecha -->
 
@@ -88,18 +89,6 @@ while($row = mysqli_fetch_array($result))
                     <ul class="nav" id="side-menu">
                         <li class="activo">
                             <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Charts<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="flot.html">Flot Charts</a>
-                                </li>
-                                <li>
-                                    <a href="morris.html">Morris.js Charts</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
                         </li>
                         <li>
                             <a href="tables.html"><i class="fa fa-table fa-fw"></i> Tables</a>
@@ -193,11 +182,33 @@ while($row = mysqli_fetch_array($result))
              <div class="col-lg-8">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <i class="fa fa-bar-chart-o fa-fw"></i> Area Chart Example
+                            <i class="fa fa-bar-chart-o fa-fw"></i><?php session_start();if(isset($_SESSION['id_account']) and !empty($_SESSION['id_account'])) {echo " Numero de seguidores de la cuenta @".$_SESSION['screen_name'];} else{ echo "Aún no dispone de cuenta, añade una";}?>
+                        <div class="pull-right">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                        Cuentas
+                                        <span class="caret"></span>
+                                    </button>
+                                    <ul class="dropdown-menu pull-right" role="menu">
+                                    <?php
+                                    if(isset($_SESSION['id_account']) and !empty($_SESSION['id_account'])) {
+                                    $query1= "SELECT id_account,screen_name FROM accounts where user_id = ".$_SESSION['user_id']."";
+												$result1 = mysqli_query($con2, $query1);
+												while($row1 = mysqli_fetch_array($result1))
+												{
+ 													echo "<li><a href='change_account.php?id_account=".$row1['id_account']."' >".$row1['screen_name']."</a></li>";
+												}
+												}else {
+													echo "No hay datos disponibles";
+													}
+                                    ?>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-									                           <div id="linea"></div>
+									                           <div id="linea"><?php  if(isset($_SESSION['id_account']) and empty($_SESSION['id_account'])) { echo "<p>No hay datos disponibles;</p>"; }?></div>
                         </div>
 
                         <!-- /.panel-body -->
@@ -234,7 +245,7 @@ while($row = mysqli_fetch_array($result))
 <script>
 Morris.Bar({
  element : 'linea',
- data:[<?php echo $chart_data; ?>],
+ data:[<?php if (isset($chart_data) and !empty($chart_data)){echo $chart_data;} ?>],
  xkey:'date',
  ykeys:['followers'],
  labels:['followers'],
