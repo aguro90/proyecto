@@ -2,6 +2,9 @@
 session_start();
 require 'connections/connection2.php';
 require 'security/security1.php';
+if(!isset($_REQUEST['id_account'])) {
+		            	header("location:logout.php");
+	}
     $stmt = $con2->prepare("SELECT id_account,screen_name FROM accounts WHERE id_account=? AND user_id=? LIMIT 1");
     $stmt->bind_param('ii', $_REQUEST['id_account'], $_SESSION['user_id']);
     $stmt->execute();

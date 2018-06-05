@@ -27,7 +27,7 @@ for row in cur.fetchall():
 
 	cur = db.cursor()
 
-	cur.execute("insert into followers values(%s,now(),%s)",(row[0],cantidad))
+	cur.execute("insert into followers values("+str(row[0])+",now(),"+str(cantidad)+")")
 
 db.commit()
 

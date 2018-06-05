@@ -53,23 +53,23 @@ function updateMarkerAddress(str) {
 
 function initialize(radio,lat,lng) { 
 
-//console.log('antes radio:',radio)
+
 if (typeof radio !== 'number'){
   radio=1000;
 };
-//console.log(radio);
 
-//console.log('antes lat:',lat)
+
+
 if (typeof lat !== 'number'){
   lat=37.89995;
 };
-//console.log(lat);
 
-//console.log('antes lng:',lng)
+
+
 if (typeof lng !== 'number'){
   lng= "-4.753081";
 };
-//console.log(lng);
+
 
 
   var latLng = new google.maps.LatLng(lat,lng);
@@ -122,23 +122,24 @@ google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 
     <!-- Bootstrap Core CSS -->
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- MetisMenu CSS -->
-    <link href="../vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
+    <link href="vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+    <link href="dist/css/sb-admin-2.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- Morris Charts CSS -->
-    <link href="../vendor/morrisjs/morris.css" rel="stylesheet">
-
-</head>
+    <link href="vendor/morrisjs/morris.css" rel="stylesheet">
+    
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+</head>
+
 <style>
 * {
   box-sizing: border-box;
@@ -275,74 +276,9 @@ input.invalid {
                             <a href="cuentas.php"><i class="fa fa-table fa-fw"></i> Cuentas</a>
                         </li>
                         <li class="activo">
-                            <a href="forms.html"><i class="fa fa-edit fa-fw"></i> Tareas</a>
+                            <a href="tasks.php"><i class="fa fa-edit fa-fw"></i> Tareas</a>
                         </li>
-                        <li>
-                            <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="panels-wells.html">Panels and Wells</a>
-                                </li>
-                                <li>
-                                    <a href="buttons.html">Buttons</a>
-                                </li>
-                                <li>
-                                    <a href="notifications.html">Notifications</a>
-                                </li>
-                                <li>
-                                    <a href="typography.html">Typography</a>
-                                </li>
-                                <li>
-                                    <a href="icons.html"> Icons</a>
-                                </li>
-                                <li>
-                                    <a href="grid.html">Grid</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-sitemap fa-fw"></i> Multi-Level Dropdown<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Second Level Item</a>
-                                </li>
-                                <li>
-                                    <a href="#">Third Level <span class="fa arrow"></span></a>
-                                    <ul class="nav nav-third-level">
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                        <li>
-                                            <a href="#">Third Level Item</a>
-                                        </li>
-                                    </ul>
-                                    <!-- /.nav-third-level -->
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-files-o fa-fw"></i> Sample Pages<span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level">
-                                <li>
-                                    <a href="blank.html">Blank Page</a>
-                                </li>
-                                <li>
-                                    <a href="login.html">Login Page</a>
-                                </li>
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
+                       
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -352,25 +288,25 @@ input.invalid {
         <!-- /Navigation -->
                 <div id="page-wrapper">
         <div class="row">
-<form id="regForm" action="#">
+<form id="regForm" action="check.php">
   <h1>Nueva Tarea:</h1>
   <!-- One "tab" for each step in the form: -->
 	<div class="tab"><b>Información de la tarea:</b>
     <p><input placeholder="Nombre..." name="name"></p>
        <p> <label for="programacion">Programación de la tarea:</label>
-    <select class="form-control" id="select" onchange="myFunction(event)">
+    <select  class="form-control" id="select" onchange="myFunction(event)">
       <option value="now">Ahora</option>
       <option value="0 4 * * *">Cada Dia</option>
       <option value="0 4 * * 1">Cada Semana</option>
       <option value="0 4 15 * *">Una vez al mes</option>
       <option value="0 4 1,15 * *">Dos veces al mes</option>
     </select></p>
- 	<p><input id="programacion" name="programacion" disabled="disabled"value="now"></p>
+ 	<p><input id="programacion" name="programacion" value="now" readonly="readonly"></p>
  	<p> <label for="cuenta">Cuenta :</label>
     <select class="form-control" id="select" onchange="myFunction1(event)">
     	<option value="" selected="selected" disabled="disabled">Selecciona</option>
 <?php
-												require ('../connections/connection2.php');
+												require ('connections/connection2.php');
 												session_start();
 												echo $_SESSION['user_id'];
                                     if(isset($_SESSION['id_account']) and !empty($_SESSION['id_account'])) {
@@ -394,9 +330,9 @@ input.invalid {
     <div id="markerStatus" style="display: none;"><i>Click and drag the marker.</i></div>
     <p><b>Posición actual:</b></p>
      <p><b>Latitud</b></p>
-     <input id="lat" name="latitud" value=""></p>
+     <input id="lat" name="latitud" value="" readonly="readonly"></p>
      <p><b>Longitud</b></p>
-     <input id="lng" name="longitud" value=""></p>
+     <input id="lng" name="longitud" value="" readonly="readonly"></p>
     <b>Dirección más cercana:</b>
     <div id="address"></div></p>
      
@@ -439,16 +375,16 @@ input.invalid {
 
 </div>
 </div>
- <script src="../vendor/jquery/jquery.min.js"></script>
+ <script src="vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 
     <!-- Metis Menu Plugin JavaScript -->
-    <script src="../vendor/metisMenu/metisMenu.min.js"></script>
+    <script src="vendor/metisMenu/metisMenu.min.js"></script>
 
     <!-- Custom Theme JavaScript -->
-   <script src="../dist/js/sb-admin-2.js"></script> 
+   <script src="dist/js/sb-admin-2.js"></script> 
    
 <script>
 var currentTab = 0; // Current tab is set to be the first tab (0)

@@ -1,54 +1,39 @@
-#estos modulos siempre ya que son para autenticarse contra la api
-import tweepy
-from tweepy import OAuthHandler
-from credenciales import *
+import argparse
+import MySQLdb
 
-auth = OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_secret) 
-api = tweepy.API(auth, wait_on_rate_limit=True)
-#################################################################3
+db = MySQLdb.connect(
+                user='twitter_accounts',
+                passwd='twitter.accounts1@',
+                host='localhost',
+                db='twitter')
+cur = db.cursor()
 
-#a partir de aqui lo que necesitemos
+parser = argparse.ArgumentParser(description='Introduce parametros para interactuar con tweepy')
 
-#bloque que lee nuestro TL 
-#for status in tweepy.Cursor(api.home_timeline).items(10):
-    # Process a single status
-#    print(status.text)
-##########################
+#no olvidar ,required=TRUE en las dos primeras
+parser.add_argument('-id_task', help='Id de la tarea en la bdd')
+parser.add_argument('-cuenta', help='Nombre de la cuenta')
+parser.add_argument('-lat', help='Latitud , puede no encontrarse',default="LAT")
+parser.add_argument('-lng', help='Longitud , puede no encontrarse',default="LNG")
+parser.add_argument('-hashtag', help='Hashtag para buscar',default="NO")
+parser.add_argument('-interacciones', help='Latitud , puede no encontrarse',default="NO")
+args = vars(parser.parse_args())
 
-#consulta por hashtag
-# For loop to iterate over tweets with #ocean, limit to 10
-#for tweet in tweepy.Cursor(api.search,q='#ocean').items(10):
+#comenzamos con viendo el tipo de consulta que se quiere hacer y separamos en funcion
 
-# Print out usernames of the last 10 people to use #ocean y texto
-    #print('Tweet by: @' + tweet.user.screen_name,end="\n")
-    #print(tweet.text,end="\n")
-    #print(tweet.created_at,end="\n")
-    #print(tweet.user.id,end="\n")
-    #print("\n")
-###########################
 
-#consulta por hashtag v2
-#for tweet in tweepy.Cursor(api.search,
-#                           q='#ocean',
-#                           since='2016-11-25',
-#                           until='2016-11-27',
-#                           geocode='1.3552217,103.8231561,100km',
-#                           lang='fr').items(10):
-#    print('Tweet by: @' + tweet.user.screen_name)
-############################
-
-# ies GC: 37.89995,-4.753081
-# hospital 37.908617,-4.793227
-#if tweet.user.screen_name == "aldelam96":
-
-#limite de 100 tweets cada 15 minutos
-#consulta con tweets
-for tweet in tweepy.Cursor(api.search, geocode='37.89995,-4.753081,1km').items(5):
-	if (tweet.user.id != 218036519) and (tweet.user.id != 148165816):
-		print (tweet.created_at)
-		#print (tweet.text,end="\n")
-		#print (tweet.user.screen_name,end="\n")
-		#print (tweet.user.id,end="\n")
-		#print (tweet.place.full_name,end="\n")
-		#print (tweet.coordinates,end="\n\n")
+#consulta solo con hashtag sin interacciones
+if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="NO"):
+	print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y sin interacciones")
+#consulta con hashtag e interacciones
+if (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="SI"):
+	print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y con interacciones")
+#consulta solo con localizacion
+if (args['hashtag']=="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="NO"):
+	print("Quieres una con hashtag  coordenadas y sin hashtag")
+#consulta con hastag localizacion y sin interacciones
+if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="NO"):
+	print("Quieres una consulta con hashtag, ubicacion y sin interacciones")
+#consulta con hashtag,localizacion e interacciones
+if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="SI"):
+	print("Quieres una consulta con hashtag, ubicacion y con interacciones")
