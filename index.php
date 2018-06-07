@@ -90,7 +90,7 @@ while($row = mysqli_fetch_array($result))
                             <a href="accounts.php"><i class="fa fa-table fa-fw"></i> Cuentas</a>
                         </li>
                         <li>
-                            <a href="tasks.php"><i class="fa fa-edit fa-fw"></i> Forms</a>
+                            <a href="tasks.php"><i class="fa fa-edit fa-fw"></i> Tareas</a>
                         </li>
                     </ul>
                 </div>

@@ -273,7 +273,7 @@ input.invalid {
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="cuentas.php"><i class="fa fa-table fa-fw"></i> Cuentas</a>
+                            <a href="accounts.php"><i class="fa fa-table fa-fw"></i> Cuentas</a>
                         </li>
                         <li class="activo">
                             <a href="tasks.php"><i class="fa fa-edit fa-fw"></i> Tareas</a>
@@ -314,14 +314,14 @@ input.invalid {
 												$result1 = mysqli_query($con2, $query1);
 												while($row1 = mysqli_fetch_array($result1))
 												{
- 													echo "<option>".$row1['screen_name']."</option>";
+ 													echo "<option value=".$row1['id_account'].">".$row1['screen_name']."</option>";
 												}
 												}else {
 													echo "<option disabled=\"disabled\">No hay datos disponibles</option>";
 													}
                                     ?>
     </select></p>
- 	<p><input id="cuenta" name="cuenta" disabled="disabled"value=""></p>
+ 	<p><input id="cuenta" name="cuenta" readonly="readonly"value=""></p>
     
   </div>
   <div class="tab"><p>Mapa:</p>

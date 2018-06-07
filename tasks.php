@@ -123,7 +123,7 @@
                                             <th>Hashtag</th>
                                             <th>Interacciones con Hashtag</th>                                            
                                             <th>Programación</th>
-
+	                                         <th>Borrar</th>													
 
                                         </tr>
                                     </thead>
@@ -131,15 +131,20 @@
 
                                          <?php
                                          require 'connections/connection2.php';
-                                    $query1= "SELECT accounts.id_account,accounts.screen_name,accounts.name,followers.number FROM accounts,followers where accounts.user_id = ".$_SESSION['user_id']." and followers.account_id=accounts.id_account and followers.date=current_date()";
+                                    $query1= "SELECT tasks.id_task,tasks.name,tasks.latitude,tasks.length,tasks.hashtag,tasks.interacciones,tasks.schedule FROM tasks,accounts WHERE tasks.id_account=accounts.id_account and accounts.user_id = ".$_SESSION['user_id'].";";
 												$result1 = mysqli_query($con2, $query1);
 												if (mysqli_num_rows($result1)!= 0){
 												while($row1 = mysqli_fetch_array($result1))
 												{
- 													echo "<tr><td>@".$row1['screen_name']."</td><td>".$row1['name']."</td><td>".$row1['number']."*</td><td><a href=delete_account.php?id_account=".$row1['id_account']."><i class=\"fa fa-trash\"></i></a></td></tr>";
+													if($row1['latitude']=="") {$row1['latitude']="No definido";}
+													if($row1['length']=="") {$row1['length']="No definido";}
+													if($row1['hashtag']=="") {$row1['hashtag']="No definido";}
+													if($row1['interacciones']==0) {$row1['interacciones']="NO";}
+													if($row1['interacciones']==1) {$row1['interacciones']="SI";}																																								
+ 													echo "<tr><td>".$row1['name']."</td><td>".$row1['latitude']."</td><td>".$row1['length']."</td><td>".$row1['hashtag']."</td><td>".$row1['interacciones']."</td><td>".$row1['schedule']."</td><td><a href=delete_task.php?id_task=".$row1['id_task']."><i class=\"fa fa-trash\"></i></a></td></tr>";
 												}
 												}else {
-													echo "<tr><td></td><td>No tiene ninguna cuenta enlazada</td><td></td></tr>";
+													echo "<tr><td></td><td>No tiene ninguna tarea creada</td><td></td><td></td><td></td><td></td><td></td></tr>";
 													}
 							
                                     ?>

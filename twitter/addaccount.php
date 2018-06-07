@@ -59,7 +59,7 @@ if (isset($_SESSION['access_token'])) {
 				</html>
 				
 				<?php
-				header( "refresh:1;url=../cuentas.php" );
+				header( "refresh:1;url=../accounts.php" );
 		}else{
 				//header( "refresh:5;url=../logout.php" );
 				
@@ -87,7 +87,7 @@ Error al insertar , esa cuenta ya está en la aplicación.
 				
 				
 							  unset($_SESSION['access_token']);
-				header( "refresh:1;url=../cuentas.php" );
+				header( "refresh:1;url=../accounts.php" );
 				}
 
 }
