@@ -123,6 +123,7 @@
                                             <th>Hashtag</th>
                                             <th>Interacciones con Hashtag</th>                                            
                                             <th>Programación</th>
+                                            <th>Encontrados</th>
 	                                         <th>Borrar</th>													
 
                                         </tr>
@@ -136,12 +137,16 @@
 												if (mysqli_num_rows($result1)!= 0){
 												while($row1 = mysqli_fetch_array($result1))
 												{
+												$query2= "SELECT count(*) FROM followed_tasks WHERE id_task=".$row1['id_task']."";
+												$result2 = mysqli_query($con2, $query2);
+												$number=mysqli_fetch_array($result2);
 													if($row1['latitude']=="") {$row1['latitude']="No definido";}
 													if($row1['length']=="") {$row1['length']="No definido";}
 													if($row1['hashtag']=="") {$row1['hashtag']="No definido";}
 													if($row1['interacciones']==0) {$row1['interacciones']="NO";}
 													if($row1['interacciones']==1) {$row1['interacciones']="SI";}																																								
- 													echo "<tr><td>".$row1['name']."</td><td>".$row1['latitude']."</td><td>".$row1['length']."</td><td>".$row1['hashtag']."</td><td>".$row1['interacciones']."</td><td>".$row1['schedule']."</td><td><a href=delete_task.php?id_task=".$row1['id_task']."><i class=\"fa fa-trash\"></i></a></td></tr>";
+ 													echo "<tr><td>".$row1['name']."</td><td>".$row1['latitude']."</td><td>".$row1['length']."</td><td>".$row1['hashtag']."</td><td>".$row1['interacciones']."</td><td>".$row1['schedule']."</td><td>".$number[0]."</td><td><a href=delete_task.php?id_task=".$row1['id_task']."><i class=\"fa fa-trash\"></i></a></td></tr>";
+												
 												}
 												}else {
 													echo "<tr><td></td><td>No tiene ninguna tarea creada</td><td></td><td></td><td></td><td></td><td></td></tr>";

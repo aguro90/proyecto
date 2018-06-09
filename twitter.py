@@ -49,7 +49,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True)
 if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="NO"):
 	#print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y sin interacciones")
 	
-	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(30):
+	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(20):
 		#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
@@ -66,7 +66,7 @@ if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and
 		for row in result_set:
 			count=row[0] 
 		if count== 0:
-			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",now(),0)"
+			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
 			cur.execute(sql)
 		db.commit()
 	print("Ejecutado correctamente")
@@ -75,70 +75,166 @@ if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and
 if (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="SI"):
 	#print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y con interacciones")
 
-	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(30):
+	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(20):
+		#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
-		rows = cur.execute(sql)
-		if rows == 0:
-			sql="insert into followed values("+str(tweet.user.id)+","+str(tweet.user.screen_name)+")"
-			cur.execute(sql)
-		sql="insert into followed_tasks values('"+str(tweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
 		cur.execute(sql)
-		for reTweet in api.retweets(tweet.id):
-			sql="select count(*) from followed where id_followed ='"+str(reTweet.user.id)+"'"
-			rows = cur.execute(sql)
-			if rows == 0:
-				sql="insert into followed values("+str(reTweet.user.id)+","+str(+reTweet.user.screen_name)+")"
-				cur.execute(sql)
-			sql="insert into followed_tasks values('"+str(reTweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed values("+str(tweet.user.id)+",'"+str(tweet.user.screen_name)+"')"
 			cur.execute(sql)
+		#debemos mirar que si en la busqueda nos da mas de un tweet del mismo id no se aniadan 2 veces el mismo usuario con la misma tarea
+		sql="select count(*) from followed_tasks where id_followed ='"+str(tweet.user.id)+"' and id_task="+str(args['id_task'])
+		cur.execute(sql)
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+			cur.execute(sql)
+			#miramos en los retweets tambien
+		for reTweet in api.retweets(tweet.id):
+			#miramos que este en la tabla seguidos
+			sql="select count(*) from followed where id_followed ='"+str(reTweet.user.id)+"'"
+			cur.execute(sql)
+			result_set = cur.fetchall()
+			for row in result_set:
+				count=row[0] 
+			if count== 0:
+				sql="insert into followed values("+str(reTweet.user.id)+",'"+str(reTweet.user.screen_name)+"')"
+				cur.execute(sql)
+			#miramos que no estuviera antes
+			sql="select count(*) from followed_tasks where id_followed ='"+str(reTweet.user.id)+"' and id_task="+str(args['id_task'])
+			cur.execute(sql)
+			result_set = cur.fetchall()
+			for row in result_set:
+				count=row[0] 
+			if count== 0:
+				sql="insert into followed_tasks values("+str(reTweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+				cur.execute(sql)
+		db.commit()
+	print("Ejecutado correctamente")
 		
 	
 	
 #consulta solo con localizacion
-if (args['hashtag']=="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="NO"):
+if (args['hashtag']=="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="NO")and(args['radio']!="NO"):
 	#print("Quieres una con hashtag  coordenadas y sin hashtag")
-	
-	coord="'"+args['lat']+","+args['lng']+","+args['radio']+"'"
-	for tweet in tweepy.Cursor(api.search, geocode=coord).items(30):
-		sql="select count(*) from followeds where id_followed ='"+str(tweet.user.id)+"'"
-		rows = cur.execute(sql)
-	if rows == 0:
-		sql="insert into followed values("+str(tweet.user.id)+","+str(tweet.user.screen_name)+")"
+	if(args['radio'])=="1000":
+		radio="1km"
+	elif args['radio'] == "2000":
+		radio="2km"
+	elif args['radio']=="3000":
+		radio="3km"
+	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
+	#print(coord)
+	for tweet in tweepy.Cursor(api.search, geocode=coord).items(20):
+#comprobamos si esta en la tabla seguidos y si no lo insertamos
+		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
-	sql="insert into followed_tasks values('"+str(tweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
-	cur.execute(sql)
-
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed values("+str(tweet.user.id)+",'"+str(tweet.user.screen_name)+"')"
+			cur.execute(sql)
+		#debemos mirar que si en la busqueda nos da mas de un tweet del mismo id no se aniadan 2 veces el mismo usuario con la misma tarea
+		sql="select count(*) from followed_tasks where id_followed ='"+str(tweet.user.id)+"' and id_task="+str(args['id_task'])
+		cur.execute(sql)
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+			cur.execute(sql)
+	db.commit()
+	print("Ejecutado correctimente")
+	
 	
 #consulta con hastag localizacion y sin interacciones
 if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="NO"):
 	#print("Quieres una consulta con hashtag, ubicacion y sin interacciones")
-	coord="'"+args['lat']+","+args['lng']+","+args['radio']+"'"
-	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(30):
+	#print("has entrado bien")
+	if(args['radio'])=="1000":
+		radio="1km"
+	elif args['radio'] == "2000":
+		radio="2km"
+	elif args['radio']=="3000":
+		radio="3km"
+	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
+	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(20):
+#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
-	rows = cur.execute(sql)
-	if rows == 0:
-		sql="insert into followed values("+str(tweet.user.id)+","+str(tweet.user.screen_name)+")"
 		cur.execute(sql)
-	sql="insert into followed_tasks values('"+str(tweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
-	cur.execute(sql)
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed values("+str(tweet.user.id)+",'"+str(tweet.user.screen_name)+"')"
+			cur.execute(sql)
+		#debemos mirar que si en la busqueda nos da mas de un tweet del mismo id no se aniadan 2 veces el mismo usuario con la misma tarea
+		sql="select count(*) from followed_tasks where id_followed ='"+str(tweet.user.id)+"' and id_task="+str(args['id_task'])
+		cur.execute(sql)
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+			cur.execute(sql)
+	db.commit()
+	print("Ejecutado correctimente")
 	
 #consulta con hashtag,localizacion e interacciones
 if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(args['interacciones']=="SI"):
 	#print("Quieres una consulta con hashtag, ubicacion y con interacciones")
-	coord="'"+args['lat']+","+args['lng']+","+args['radio']+"'"
-	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(30):
+	if(args['radio'])=="1000":
+		radio="1km"
+	elif args['radio'] == "2000":
+		radio="2km"
+	elif args['radio']=="3000":
+		radio="3km"
+	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
+
+	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(20):
+#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
-	rows = cur.execute(sql)
-	if rows == 0:
-		sql="insert into followed values("+str(tweet.user.id)+","+str(tweet.user.screen_name)+")"
 		cur.execute(sql)
-	sql="insert into followed_tasks values('"+str(tweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
-	cur.execute(sql)
-	for reTweet in api.retweets(tweet.id):
-		sql="select count(*) from followed where id_followed ='"+str(reTweet.user.id)+"'"
-		rows = cur.execute(sql)
-		if rows == 0:
-			sql="insert into followed values("+str(reTweet.user.id)+","+str(+reTweet.user.screen_name)+")"
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed values("+str(tweet.user.id)+",'"+str(tweet.user.screen_name)+"')"
 			cur.execute(sql)
-		sql="insert into followed_tasks values('"+str(reTweet.user.id)+"','"+str(args['id_task'])+"',now(),false)"
+		#debemos mirar que si en la busqueda nos da mas de un tweet del mismo id no se aniadan 2 veces el mismo usuario con la misma tarea
+		sql="select count(*) from followed_tasks where id_followed ='"+str(tweet.user.id)+"' and id_task="+str(args['id_task'])
 		cur.execute(sql)
+		result_set = cur.fetchall()
+		for row in result_set:
+			count=row[0] 
+		if count== 0:
+			sql="insert into followed_tasks values("+str(tweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+			cur.execute(sql)
+			#miramos en los retweets tambien
+		for reTweet in api.retweets(tweet.id):
+			#miramos que este en la tabla seguidos
+			sql="select count(*) from followed where id_followed ='"+str(reTweet.user.id)+"'"
+			cur.execute(sql)
+			result_set = cur.fetchall()
+			for row in result_set:
+				count=row[0] 
+			if count== 0:
+				sql="insert into followed values("+str(reTweet.user.id)+",'"+str(reTweet.user.screen_name)+"')"
+				cur.execute(sql)
+			#miramos que no estuviera antes
+			sql="select count(*) from followed_tasks where id_followed ='"+str(reTweet.user.id)+"' and id_task="+str(args['id_task'])
+			cur.execute(sql)
+			result_set = cur.fetchall()
+			for row in result_set:
+				count=row[0] 
+			if count== 0:
+				sql="insert into followed_tasks values("+str(reTweet.user.id)+","+str(args['id_task'])+",NULL,0,0)"
+				cur.execute(sql)
+		db.commit()
+	print("Ejecutado correctamente")

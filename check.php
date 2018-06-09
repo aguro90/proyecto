@@ -57,10 +57,16 @@
     $stmt->bind_param('ssss', $_REQUEST['name'], $_REQUEST['hashtag'],$_REQUEST['programacion'],$_REQUEST['cuenta']);
     $stmt->execute();
     #printf("Error: %s.\n", $stmt->error);
-	
+				$id=mysqli_query($con2,"select id_task from tasks where name = '".$_REQUEST['name']."'");
+			while($row = mysqli_fetch_array($id)){
+			$id_task=	$row['id_task'];
+			}
 		#miramos si quiere ejecutarlo ahora o asignarlo en crontab	
 		if($_REQUEST['programacion'] == "now") {
 				echo "quieres buscar por un hashtag con interacciones sin tener en cuenta la ubicacion y justo ahora"; 
+				echo "ejecutando...";
+				$salida = shell_exec("python /var/www/html/proyecto/twitter.py -id_task=".$id_task." -cuenta=".$_REQUEST['cuenta']." -hashtag=".$_REQUEST['hashtag']." -interacciones=SI");
+				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag con interacciones sin tener en cuenta la ubicacion y programado para ".$_REQUEST['programacion'].""; 
  		}
@@ -75,11 +81,16 @@
     $stmt->bind_param('sssiss', $_REQUEST['name'], $_REQUEST['latitud'],$_REQUEST['longitud'],$_REQUEST['radio'],$_REQUEST['programacion'],$_REQUEST['cuenta']);
     $stmt->execute();
     #printf("Error: %s.\n", $stmt->error);
-
+				$id=mysqli_query($con2,"select id_task from tasks where name = '".$_REQUEST['name']."'");
+			while($row = mysqli_fetch_array($id)){
+			$id_task=	$row['id_task'];
+			}
 	
 	#miramos si quiere ejecutarlo ahora o crontab
 		if($_REQUEST['programacion'] == "now") {
 				echo "quieres buscar por un ubicacion sin tener en cuenta hashtag e interacciones y justo ahora"; 
+				$salida= shell_exec("python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']."");
+ 							echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un ubicacion sin tener en cuenta hashtag e interacciones y programado para ".$_REQUEST['programacion'].""; 
  		}
@@ -95,10 +106,17 @@
     $stmt->bind_param('sssisss', $_REQUEST['name'], $_REQUEST['latitud'],$_REQUEST['longitud'],$_REQUEST['radio'],$_REQUEST['hashtag'],$_REQUEST['programacion'],$_REQUEST['cuenta']);
     $stmt->execute();
     #printf("Error: %s.\n", $stmt->error);
+    	$id=mysqli_query($con2,"select id_task from tasks where name = '".$_REQUEST['name']."'");
+			while($row = mysqli_fetch_array($id)){
+			$id_task=	$row['id_task'];
+			}
 	
 		#miramos si quiere ejecutarlo ahora o asignarlo en crontab	
 		if($_REQUEST['programacion'] == "now") {
+			echo "entraste. Tarea=".$id_task;
 				echo "quieres buscar por un hashtag sin interacciones, ubicacion y justo ahora"; 
+				$salida= shell_exec("python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']." -hashtag=".$_REQUEST['hashtag']."");
+				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag sin interacciones, ubicacion y programado para ".$_REQUEST['programacion'].""; 
  		}
@@ -112,15 +130,21 @@
     $stmt->bind_param('sssisss', $_REQUEST['name'], $_REQUEST['latitud'],$_REQUEST['longitud'],$_REQUEST['radio'],$_REQUEST['hashtag'],$_REQUEST['programacion'],$_REQUEST['cuenta']);
     $stmt->execute();
     #printf("Error: %s.\n", $stmt->error);
+        	$id=mysqli_query($con2,"select id_task from tasks where name = '".$_REQUEST['name']."'");
+			while($row = mysqli_fetch_array($id)){
+			$id_task=	$row['id_task'];
+			}
 		#miramos si quiere ejecutarlo ahora o asignarlo en crontab	
 		if($_REQUEST['programacion'] == "now") {
 				echo "quieres buscar por un hashtag con interacciones y coordenadas  y justo ahora"; 
+			   $salida= shell_exec("python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']." -hashtag=".$_REQUEST['hashtag']." -interacciones=SI");
+				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag con interacciones, ubicacion y programado para ".$_REQUEST['programacion'].""; 
  		}
  	}
  	
- #header("location:tasks.php");
+ header("location:tasks.php");
  	 	
   }else {
   	#Si no tiene el minimo de parametros necesarios
