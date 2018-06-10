@@ -118,6 +118,7 @@
                                     <thead>
                                         <tr>
                                             <th>Nombre</th>
+                                            <th>Cuenta</th>
                                             <th>Latitud</th>
                                             <th>Longitud</th>
                                             <th>Hashtag</th>
@@ -132,7 +133,7 @@
 
                                          <?php
                                          require 'connections/connection2.php';
-                                    $query1= "SELECT tasks.id_task,tasks.name,tasks.latitude,tasks.length,tasks.hashtag,tasks.interacciones,tasks.schedule FROM tasks,accounts WHERE tasks.id_account=accounts.id_account and accounts.user_id = ".$_SESSION['user_id'].";";
+                                    $query1= "SELECT tasks.id_task,accounts.screen_name,tasks.name,tasks.latitude,tasks.length,tasks.hashtag,tasks.interacciones,tasks.schedule FROM tasks,accounts WHERE tasks.id_account=accounts.id_account and accounts.user_id = ".$_SESSION['user_id'].";";
 												$result1 = mysqli_query($con2, $query1);
 												if (mysqli_num_rows($result1)!= 0){
 												while($row1 = mysqli_fetch_array($result1))
@@ -145,7 +146,7 @@
 													if($row1['hashtag']=="") {$row1['hashtag']="No definido";}
 													if($row1['interacciones']==0) {$row1['interacciones']="NO";}
 													if($row1['interacciones']==1) {$row1['interacciones']="SI";}																																								
- 													echo "<tr><td>".$row1['name']."</td><td>".$row1['latitude']."</td><td>".$row1['length']."</td><td>".$row1['hashtag']."</td><td>".$row1['interacciones']."</td><td>".$row1['schedule']."</td><td>".$number[0]."</td><td><a href=delete_task.php?id_task=".$row1['id_task']."><i class=\"fa fa-trash\"></i></a></td></tr>";
+ 													echo "<tr><td>".$row1['name']."</td><td>".$row1['screen_name']."</td><td>".$row1['latitude']."</td><td>".$row1['length']."</td><td>".$row1['hashtag']."</td><td>".$row1['interacciones']."</td><td>".$row1['schedule']."</td><td>".$number[0]."</td><td><a href=delete_task.php?id_task=".$row1['id_task']."><i class=\"fa fa-trash\"></i></a></td></tr>";
 												
 												}
 												}else {

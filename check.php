@@ -44,6 +44,11 @@
 				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag,sin interacciones, sin tener en cuenta la ubicacion y programado para ".$_REQUEST['programacion'].""; 
+ 		shell_exec("crontab -l > cron/crontmp");
+ 		$orden="echo \"".$_REQUEST['programacion']." python /var/www/html/proyecto/twitter.py -id_task=".$id_task." -cuenta=".$_REQUEST['cuenta']." -hashtag=".$_REQUEST['hashtag']."\" >> cron/crontmp";
+ 		shell_exec($orden);
+ 		shell_exec("crontab /var/www/html/proyecto/cron/crontmp");
+ 		shell_exec("rm /var/www/html/proyecto/cron/crontmp");
  		}
  	}
  	
@@ -69,6 +74,11 @@
 				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag con interacciones sin tener en cuenta la ubicacion y programado para ".$_REQUEST['programacion'].""; 
+ 		shell_exec("crontab -l > cron/crontmp");
+ 		$orden="echo \"".$_REQUEST['programacion']." python /var/www/html/proyecto/twitter.py -id_task=".$id_task." -cuenta=".$_REQUEST['cuenta']." -hashtag=".$_REQUEST['hashtag']." -interacciones=SI\" >> cron/crontmp";
+ 		shell_exec($orden);
+ 		shell_exec("crontab /var/www/html/proyecto/cron/crontmp");
+ 		shell_exec("rm /var/www/html/proyecto/cron/crontmp"); 		
  		}
  	} 	
  #Solo coordenadas
@@ -93,6 +103,11 @@
  							echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un ubicacion sin tener en cuenta hashtag e interacciones y programado para ".$_REQUEST['programacion'].""; 
+  		shell_exec("crontab -l > cron/crontmp");
+ 		$orden="echo \"".$_REQUEST['programacion']." python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']."\" >> cron/crontmp";
+ 		shell_exec($orden);
+ 		shell_exec("crontab /var/www/html/proyecto/cron/crontmp");
+ 		shell_exec("rm /var/www/html/proyecto/cron/crontmp"); 		
  		}
  	}
  
@@ -119,6 +134,11 @@
 				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag sin interacciones, ubicacion y programado para ".$_REQUEST['programacion'].""; 
+ 	  	shell_exec("crontab -l > cron/crontmp");
+ 		$orden="echo \"".$_REQUEST['programacion']." python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']." -hashtag=".$_REQUEST['hashtag']."\" >> cron/crontmp";
+ 		shell_exec($orden);
+ 		shell_exec("crontab /var/www/html/proyecto/cron/crontmp");
+ 		shell_exec("rm /var/www/html/proyecto/cron/crontmp"); 
  		}
  	}
 
@@ -141,6 +161,11 @@
 				echo "<pre>$salida</pre>";
  			}else {
 				echo "quieres buscar por un hashtag con interacciones, ubicacion y programado para ".$_REQUEST['programacion'].""; 
+		shell_exec("crontab -l > cron/crontmp");
+ 		$orden="echo \"".$_REQUEST['programacion']." python /var/www/html/proyecto/twitter.py -cuenta=".$_REQUEST['cuenta']." -id_task=".$id_task." -lat=".$_REQUEST['latitud']." -lng=".$_REQUEST['longitud']." -radio=".$_REQUEST['radio']." -hashtag=".$_REQUEST['hashtag']." -interacciones=SI\" >> cron/crontmp";
+ 		shell_exec($orden);
+ 		shell_exec("crontab /var/www/html/proyecto/cron/crontmp");
+ 		shell_exec("rm /var/www/html/proyecto/cron/crontmp"); 
  		}
  	}
  	

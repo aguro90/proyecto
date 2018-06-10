@@ -49,7 +49,7 @@ api = tweepy.API(auth, wait_on_rate_limit=True)
 if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="NO"):
 	#print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y sin interacciones")
 	
-	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(20):
+	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(5):
 		#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
@@ -75,7 +75,7 @@ if  (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and
 if (args['hashtag']!="NO") and (args['lat']=="LAT") and (args['lng']=="LNG")and(args['interacciones']=="SI"):
 	#print("Quieres una con hashtag "+args['hashtag']+" y sin coordenadas y con interacciones")
 
-	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(20):
+	for tweet in  tweepy.Cursor(api.search,q=args['hashtag']).items(5):
 		#comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
@@ -130,7 +130,7 @@ if (args['hashtag']=="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(
 		radio="3km"
 	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
 	#print(coord)
-	for tweet in tweepy.Cursor(api.search, geocode=coord).items(20):
+	for tweet in tweepy.Cursor(api.search, geocode=coord).items(5):
 #comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
@@ -164,7 +164,7 @@ if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(
 	elif args['radio']=="3000":
 		radio="3km"
 	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
-	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(20):
+	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(5):
 #comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
@@ -197,7 +197,7 @@ if (args['hashtag']!="NO") and (args['lat']!="LAT") and (args['lng']!="LNG")and(
 		radio="3km"
 	coord=str(args['lat'])+","+str(args['lng'])+","+str(radio)
 
-	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(20):
+	for tweet in tweepy.Cursor(api.search,q=args['hashtag'],geocode=coord).items(5):
 #comprobamos si esta en la tabla seguidos y si no lo insertamos
 		sql="select count(*) from followed where id_followed ='"+str(tweet.user.id)+"'"
 		cur.execute(sql)
