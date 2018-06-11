@@ -20,12 +20,33 @@ for row in cur.fetchall():
 	auth = OAuthHandler(consumer_key, consumer_secret)
 	auth.set_access_token(row[4], row[5])
 	api = tweepy.API(auth, wait_on_rate_limit=True)
-
 	user = api.me()
+	
 #ahora vamos a seguir al numero de personas que tenga en su perfil
 	cantidad = user.followers_count
+	
 #calculamos el numero de seguidores que tiene y lo insertamos para obtener el grafico del index.
 	cur.execute("insert into followers values("+str(row[0])+",now(),"+str(cantidad)+")")
+	
+#ahora vamos a comprobar los que seguimos anteriormente 
+#obtenemos el numero de dias que se quiere esperar
+	cur.execute("select check_after from users,accounts where users.user_id=accounts.user_id and accounts.id_account="+str(row[0]))
+	for row4 in cur.fetchall():
+		cft=row4[0]
+	#print (cft)
+	#obtenemos los id que cumplen que han pasado el numero de dias para comprobar 
+	sql="select id_followed from followed_tasks,tasks,accounts where followed_tasks.id_task=tasks.id_task and tasks.id_account=accounts.id_account and accounts.id_account="+str(row[0])+" and followed_tasks.checked=0 and followed_tasks.follow_date is not null AND  followed_tasks.follow_date <= SUBDATE(now(), interval "+str(cft)+"  DAY)"
+	cur.execute(sql)
+	for row3 in cur.fetchall():
+		#print (row3[0])
+		status=api.show_friendship(source_id=str(row3[0]),target_id=str(row[0]))
+		if status[0].following == True:
+			#si nos ha devuelto el follow cambiamos el checked a 1 para no volver a procesarlo y aniadimos 1 al campo follow_back
+			cur.execute("update followed_tasks,tasks set followed_tasks.checked = 1,followed_tasks.follow_back = 1 where followed_tasks.id_followed = "+row3[0]+" and tasks.id_account= "+row[0])
+		else:
+			#si no nos sigue tras esto eliminamos la relacion y hacemos update del campo checked a 1
+		api.destroy_friendship(row3[0])
+		cur.execute("update followed_tasks,tasks set followed_tasks.checked = 1 where followed_tasks.id_followed = "+row3[0]+" and tasks.id_account= "+row[0])
 
 #ahora vamos a seguir al numero de personas que tenga en su perfil
 	cur.execute("select max_per_day from users,accounts where users.user_id=accounts.user_id and accounts.id_account="+str(row[0]))
@@ -44,7 +65,8 @@ for row in cur.fetchall():
 			#print ("No lo sigues")
 			#lo seguimos y actualizamos el campo de la fecha y dejamos el campo checked a 0 para comprobarlo despues
 			api.create_friendship(row2[0])
-			cur.execute("update followed_tasks set followed_tasks.follow_date = now()) where followed_tasks.id_followed = "+row2[0])
+			cur.execute("update followed_tasks set followed_tasks.follow_date = now() where followed_tasks.id_followed = "+row2[0])
+
 #confirmamos todos los cambios
 db.commit()
 

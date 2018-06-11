@@ -9,5 +9,5 @@ if (!$con2) {
     exit;
 }
 
-
+$salt="nmxdklsdnmdhj383";
 ?>

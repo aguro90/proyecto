@@ -1,5 +1,24 @@
 <?php
+
   require "security/security1.php";
+	require "connections/connection2.php";
+if(isset($_REQUEST['seguidores']) and !empty($_REQUEST['seguidores']) ) {
+	$sql="update users set max_per_day = ".$_REQUEST['seguidores']." where user_id = ".$_SESSION['user_id']."";
+	mysqli_query($con2,$sql);
+	}
+if(isset($_REQUEST['dias']) and !empty($_REQUEST['dias'])) {
+	$sql="update users set check_after = ".$_REQUEST['dias']." where user_id = ".$_SESSION['user_id']."";
+	mysqli_query($con2,$sql);
+	}
+if(isset($_REQUEST['username']) and isset($_REQUEST['pass']) and isset($_REQUEST['pass1']) and !empty($_REQUEST['username']) and !empty($_REQUEST['pass']) and !empty($_REQUEST['pass1'])) {
+	if($_REQUEST['pass']==$_REQUEST['pass1']) {
+		$sql="insert into users values (NULL,".$_REQUEST['username'].",".md5($salt,$_REQUEST['pass']).",10,3)";	
+		mysqli_query($con2,$sql);
+		$_SESSION['confirmar']=1;
+		}else {
+		$_SESSION['confirmar']=0;
+			}
+	}
 ?>
 
 <!DOCTYPE html>
@@ -10,13 +29,30 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
     <title>Auto CM Project</title>
 
     <style>
-    .activo{background: darkgray;};
+#Form {
+  background-color: #ffffff;
+  font-family: Raleway;
+  padding: 40px;
+  width: 70%;
+  min-width: 300px;
+}
+
+    input {
+  padding: 10px;
+  width: 100%;
+  font-size: 17px;
+  font-family: Raleway;
+  border: 1px solid #aaaaaa;
+}
+.btn{
+margin-top: 10px;
+
+}
+
     </style>
 
     <!-- Bootstrap Core CSS -->
@@ -59,7 +95,7 @@
                         <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-user">
-                        <li><a href="settings.php"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                         </li>
                         <li class="divider"></li>
                         <li><a href="logout.php"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
@@ -74,86 +110,71 @@
             <div class="navbar-default sidebar" role="navigation" style="background: aliceblue;">
                 <div class="sidebar-nav navbar-collapse">
                     <ul class="nav" id="side-menu">
-                        <li >
+                        <li>
                             <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
-                        <li class="activo">
+                        <li>
                             <a href="accounts.php"><i class="fa fa-table fa-fw"></i> Cuentas</a>
                         </li>
                         <li>
                             <a href="tasks.php"><i class="fa fa-edit fa-fw"></i> Tareas</a>
                         </li>
-
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
             </div>
             <!-- /.navbar-static-side -->
         </nav>
-        <!-- /Navigation -->
-        <!-- Contenido aqui-->
+        <?php
+			require "connections/connection1.php";        
+        $result=mysqli_query($con,"select max_per_day,check_after from users where user_id = ".$_SESSION['user_id']."");
+        $row=mysqli_fetch_array($result);
+        ?>
         <div id="page-wrapper">
-        
-        <div class="row">
-                <div class="col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                        <div class="pull-right">
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                                        Acciones
-                                        <span class="caret"></span>
-                                    </button>
-                                    <ul class="dropdown-menu pull-right" role="menu">
-                                    <li><a href="<?php require 'twitter/index.php'; echo $url ?>">Añadir Cuenta</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <strong>Cuentas enlazadas a con tu usuario:</strong>
-                        </div>
-                        <!-- /.panel-heading -->
-                        <div class="panel-body">
-                            <div class="table-responsive">
-                                <table class="table table-striped table-bordered table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Screen Name</th>
-                                            <th>Account Name</th>
-                                            <th>Followers</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-
-                                         <?php
-                                         require 'connections/connection2.php';
-                                    $query1= "SELECT accounts.id_account,accounts.screen_name,accounts.name,followers.number FROM accounts,followers where accounts.user_id = ".$_SESSION['user_id']." and followers.account_id=accounts.id_account and followers.date=current_date()";
-												$result1 = mysqli_query($con2, $query1);
-												if (mysqli_num_rows($result1)!= 0){
-												while($row1 = mysqli_fetch_array($result1))
-												{
- 													echo "<tr><td>@".$row1['screen_name']."</td><td>".$row1['name']."</td><td>".$row1['number']."*</td><td><a href=delete_account.php?id_account=".$row1['id_account']."><i class=\"fa fa-trash\"></i></a></td></tr>";
-												}
-												}else {
-													echo "<tr><td></td><td>No tiene ninguna cuenta enlazada</td><td></td></tr>";
-													}
-							
-                                    ?>
-                                    </tbody>
-                                    <p>*A día de <?php $fecha= date ("j/n/Y"); print $fecha ?> a las 00:00</p>
-
-
-                                </table>
-                            </div>
-                            <!-- /.table-responsive -->
-                        </div>
-                        <!-- /.panel-body -->
-                    </div>
-                    <!-- /.panel -->
-                </div>
- 
+         <div class="row">
+				<form class="form-group" style="margin-top: 30px;" action="#">		
+					<label>Maximo de seguidores por dia: 
+					<input  name="seguidores" value="<?php echo $row[0]  ?>">		
+					<button type="submit" class="btn btn-default">Actualizar</button>
+					</label>
+				</form>
         </div>
-            <!-- jQuery -->
+       <hr>
+        <div class="row">
+				<form class="form-group" style="margin-top: 30px;" action="#">		
+					<label>Dias a esperar para comprobar Follow Back: 
+					<input  name="dias" value="<?php echo $row[1]  ?>">		
+					<button type="submit" class="btn btn-default">Actualizar</button>
+					</label>
+				</form>
+        </div>
+               <hr>
+        <div class="row">
+          <h1>Nuevo Usuario:</h1>
+				<form class="form-group" style="margin-top: 30px;" action="#">		
+					<label>Nuevo Nombre de Usuario: 
+					<input  name="username">		
+					<label>Contraseña</label>
+					<input  name="pass" type="password">
+					<?php 
+					if($_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
+					if($_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
+					?>		
+					<label>Repite Contraseña</label>
+					<input  name="pass1" type="password">	
+					<?php 
+					if($_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
+					if($_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
+					?>	
+					<button type="submit" class="btn btn-default">Añadir Usuario</button>	
+					</label>
+
+				</form>
+        </div>
+        </div>
+
+
+    <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
@@ -165,8 +186,14 @@
     <!-- Custom Theme JavaScript -->
    <script src="dist/js/sb-admin-2.js"></script> 
    
-</body>
+       <!-- Morris Charts JavaScript -->
+    <script src="vendor/raphael/raphael.min.js"></script>
+    <script src="vendor/morrisjs/morris.min.js"></script>
 
+
+
+</body>
 </html>
+        
         
         

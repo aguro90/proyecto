@@ -173,7 +173,29 @@
  	 	
   }else {
   	#Si no tiene el minimo de parametros necesarios
-  	echo "tienes que asignar un nombre y coordenadas o hashtag o los dos";
+  	
+  					    				?>
+    								<html>
+				<head>
+				<title>Error al añadir</title>
+				    <!-- Bootstrap Core CSS -->
+  			  <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+				    <!-- Custom CSS -->
+ 			   <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+				</head>
+				<div class="row">
+    <div class="col-md-2 col-md-offset-5"style="margin-top: 50px;"><div class="alert alert-danger" role="alert">
+Error al insertar la tarea, al menos debe contener o una ubicacion o un hashtag
+</div></div>
+				</div>
+				
+				</html>
+				
+				<?php
+  	
+  	
+ 				header( "refresh:1;url=tasks.php" );
   	}
  
  ?>
