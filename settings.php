@@ -157,14 +157,14 @@ margin-top: 10px;
 					<label>Contraseña</label>
 					<input  name="pass" type="password">
 					<?php 
-					if($_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
-					if($_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
+					if(isset($_SESSION['confirmar']) and $_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
+					if(isset($_SESSION['confirmar']) and $_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
 					?>		
 					<label>Repite Contraseña</label>
 					<input  name="pass1" type="password">	
 					<?php 
-					if($_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
-					if($_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
+					if(isset($_SESSION['confirmar']) and $_SESSION['confirmar']==1) {echo "<p style=\"color=green\"> Exito al insertar</p>";}					
+					if(isset($_SESSION['confirmar']) and $_SESSION['confirmar']==0) {echo "<p style=\"color=red\"> Fallo al insertar</p>";}					
 					?>	
 					<button type="submit" class="btn btn-default">Añadir Usuario</button>	
 					</label>
